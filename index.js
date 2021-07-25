@@ -77,7 +77,7 @@ function lifecycle (pkg, stage, wd, opts) {
 
         if ((wd.indexOf(opts.dir) !== 0 || _incorrectWorkingDirectory(wd, pkg)) &&
             !opts.unsafePerm && pkg.scripts[stage]) {
-          opts.log.warn('lifecycle', logid(pkg, stage), 'cannot run in wd', pkg._id, pkg.scripts[stage], `(wd=${wd})`)
+          opts.log.warn(`"${stage}" script of "${pkg._id}" inside "${wd}" is skipped as the working directory seems suspicious. To run this lifecycle script anyway, use "--unsafe-perm".`)
           return resolve()
         }
 
