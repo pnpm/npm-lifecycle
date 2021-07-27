@@ -44,7 +44,7 @@
   "devDependencies": {
     "npm-lifecycle": "2.1.1",
     "nyc": "15.1.0",
-    "sinon": "10.0.0",
+    "sinon": "11.1.2",
     "standard": "12.0.1",
     "standard-version": "9.1.1",
     "tap": "14.11.0",
