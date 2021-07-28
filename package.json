@@ -42,7 +42,7 @@
     "which": "^2.0.0"
   },
   "devDependencies": {
-    "npm-lifecycle": "2.1.1",
+    "npm-lifecycle": "3.1.5",
     "nyc": "15.1.0",
     "sinon": "10.0.0",
     "standard": "12.0.1",
