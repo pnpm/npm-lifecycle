@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/npm/lifecycle#readme",
   "dependencies": {
-    "@yarnpkg/shell": "^2.2.0",
+    "@yarnpkg/shell": "^3.0.0",
     "byline": "^5.0.0",
     "node-gyp": "^8.0.0",
     "resolve-from": "^5.0.0",
