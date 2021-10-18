@@ -10,7 +10,7 @@ specifiers:
   sinon: 10.0.0
   slide: ^1.1.6
   standard: 12.0.1
-  standard-version: 9.1.1
+  standard-version: 9.3.2
   tap: 14.11.0
   uid-number: 0.0.6
   umask: ^1.1.0
@@ -33,7 +33,7 @@ devDependencies:
   nyc: 15.1.0
   sinon: 10.0.0
   standard: 12.0.1
-  standard-version: 9.1.1
+  standard-version: 9.3.2
   tap: 14.11.0
   weallbehave: 1.2.0
   weallcontribute: 1.0.9
@@ -63,7 +63,7 @@ packages:
       gensync: 1.0.0-beta.1
       json5: 2.1.2
       lodash: 4.17.15
-      resolve: 1.15.1
+      resolve: 1.19.0
       semver: 5.7.1
       source-map: 0.5.7
     dev: true
@@ -896,8 +896,8 @@ packages:
     resolution: {integrity: sha512-IpVePh16EbbB02V+UA+HQnnPIohgXvJRxHcS5+Uwk4AT5LjzCZJm5sp/yqs5C6KZJ1jMsV4paEV13BN1pvDuxQ==}
     dev: true
 
-  /conventional-changelog-conventionalcommits/4.5.0:
-    resolution: {integrity: sha512-buge9xDvjjOxJlyxUnar/+6i/aVEVGA7EEh4OafBCXPlLUQPGbRUBhBUveWRxzvR8TEjhKEP4BdepnpG2FSZXw==}
+  /conventional-changelog-conventionalcommits/4.6.1:
+    resolution: {integrity: sha512-lzWJpPZhbM1R0PIzkwzGBCnAkH5RKJzJfFQZcl/D+2lsJxAwGnDKBqn/F4C1RD31GJNn8NuKWQzAZDAVXPp2Mw==}
     engines: {node: '>=10'}
     dependencies:
       compare-func: 2.0.0
@@ -991,7 +991,7 @@ packages:
       conventional-changelog-angular: 5.0.12
       conventional-changelog-atom: 2.0.8
       conventional-changelog-codemirror: 2.0.8
-      conventional-changelog-conventionalcommits: 4.5.0
+      conventional-changelog-conventionalcommits: 4.6.1
       conventional-changelog-core: 4.2.2
       conventional-changelog-ember: 2.0.9
       conventional-changelog-eslint: 3.0.9
@@ -1280,6 +1280,7 @@ packages:
 
   /encoding/0.1.13:
     resolution: {integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==}
+    requiresBuild: true
     dependencies:
       iconv-lite: 0.6.2
     dev: false
@@ -1374,7 +1375,7 @@ packages:
     resolution: {integrity: sha512-sfmTqJfPSizWu4aymbPr4Iidp5yKm8yDkHp+Ir3YiTHiiDfxh69mOUsmiqW6RZ9zRXFaF64GtYmN7e+8GHBv6Q==}
     dependencies:
       debug: 2.6.9
-      resolve: 1.12.0
+      resolve: 1.19.0
     dev: true
 
   /eslint-module-utils/2.4.1:
@@ -1802,7 +1803,8 @@ packages:
     resolution: {integrity: sha512-R4wDiBwZ0KzpgOWetKDug1FZcYhqYnUYKtfZYt4mD5SBz76q0KR4Q9o7GIPamsVPGmW3EYPPJ0dOOjvx32ldZA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
-    deprecated: Please update to latest version
+    deprecated: '"Please update to latest v2.3 or v2.2"'
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -3055,7 +3057,7 @@ packages:
     dependencies:
       hosted-git-info: 3.0.7
       resolve: 1.19.0
-      semver: 7.3.2
+      semver: 7.3.5
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -3858,12 +3860,6 @@ packages:
       path-parse: 1.0.6
     dev: true
 
-  /resolve/1.15.1:
-    resolution: {integrity: sha512-84oo6ZTtoTUpjgNEr5SJyzQhzL72gaRodsSfyxC/AXRvwu0Yse9H8eF9IpGo7b8YetZhlI6v7ZQ6bKBFV/6S7w==}
-    dependencies:
-      path-parse: 1.0.6
-    dev: true
-
   /resolve/1.19.0:
     resolution: {integrity: sha512-rArEXAgsBG4UgRGcynxWIWKFvh/XZCcS8UJdHhwy91zwAvCZIbcs+vAbflgBnNjYMs/i/i+/Ux6IZhML1yPvxg==}
     dependencies:
@@ -3876,7 +3872,7 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       onetime: 2.0.1
-      signal-exit: 3.0.2
+      signal-exit: 3.0.3
     dev: true
 
   /retry/0.12.0:
@@ -3951,19 +3947,12 @@ packages:
     hasBin: true
     dev: true
 
-  /semver/7.3.2:
-    resolution: {integrity: sha512-OrOb32TeeambH6UrhtShmF7CRDqhL6/5XpPNp2DuRH6+9QLw/orhp72j87v8Qa1ScDkvrrBNpZcDejAirJmfXQ==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dev: true
-
   /semver/7.3.5:
     resolution: {integrity: sha512-PoeGJYh8HK4BTO/a9Tf6ZG3veo/A7ZVsYrSA6J8ny9nb3B1VrpkuN+z9OE5wfE5p6H4LchYZsegiQgbJD94ZFQ==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
-    dev: false
 
   /set-blocking/2.0.0:
     resolution: {integrity: sha1-BF+XgtARrppoA93TgrJDkrPYkPc=}
@@ -3998,10 +3987,6 @@ packages:
       glob: 7.1.6
       interpret: 1.4.0
       rechoir: 0.6.2
-    dev: true
-
-  /signal-exit/3.0.2:
-    resolution: {integrity: sha1-tf3AjxKH6hF4Yo5BXiUTK3NkbG0=}
     dev: true
 
   /signal-exit/3.0.3:
@@ -4172,15 +4157,15 @@ packages:
       pkg-conf: 2.1.0
     dev: true
 
-  /standard-version/9.1.1:
-    resolution: {integrity: sha512-PF9JnRauBwH7DAkmefYu1mB2Kx0MVG13udqDTFmDUiogbyikBAHBdMrVuauxtAb2YIkyZ3FMYCNv0hqUKMOPww==}
+  /standard-version/9.3.2:
+    resolution: {integrity: sha512-u1rfKP4o4ew7Yjbfycv80aNMN2feTiqseAhUhrrx2XtdQGmu7gucpziXe68Z4YfHVqlxVEzo4aUA0Iu3VQOTgQ==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
       chalk: 2.4.2
       conventional-changelog: 3.1.24
       conventional-changelog-config-spec: 2.1.0
-      conventional-changelog-conventionalcommits: 4.5.0
+      conventional-changelog-conventionalcommits: 4.6.1
       conventional-recommended-bump: 6.1.0
       detect-indent: 6.0.0
       detect-newline: 3.1.0
@@ -4189,7 +4174,7 @@ packages:
       find-up: 5.0.0
       fs-access: 1.0.1
       git-semver-tags: 4.1.1
-      semver: 7.3.2
+      semver: 7.3.5
       stringify-package: 1.0.1
       yargs: 16.2.0
     dev: true
@@ -4672,6 +4657,7 @@ packages:
     resolution: {integrity: sha512-zGVwKslUAD/EeqOrD1nQaBmXIHl1Vw371we8cvS8I6mYK9rmgX5tv8AAeJdfsQ3Kk5mGax2SVV/AizxdNGhl7Q==}
     engines: {node: '>=0.8.0'}
     hasBin: true
+    requiresBuild: true
     dependencies:
       commander: 2.20.3
     dev: true
