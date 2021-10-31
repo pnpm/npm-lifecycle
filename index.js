@@ -13,7 +13,7 @@ const chain = require('slide').chain
 const uidNumber = require('uid-number')
 const umask = require('umask')
 const which = require('which')
-const byline = require('byline')
+const byline = require('@pnpm/byline')
 const resolveFrom = require('resolve-from')
 const { PassThrough } = require('stream')
 

@@ -32,14 +32,14 @@
   },
   "homepage": "https://github.com/npm/lifecycle#readme",
   "dependencies": {
-    "@yarnpkg/shell": "^2.2.0",
-    "byline": "^5.0.0",
-    "node-gyp": "^8.0.0",
+    "@pnpm/byline": "^1.0.0",
+    "@yarnpkg/shell": "^2.4.1",
+    "node-gyp": "^8.3.0",
     "resolve-from": "^5.0.0",
     "slide": "^1.1.6",
     "uid-number": "0.0.6",
     "umask": "^1.1.0",
-    "which": "^2.0.0"
+    "which": "^2.0.2"
   },
   "devDependencies": {
     "npm-lifecycle": "2.1.1",
