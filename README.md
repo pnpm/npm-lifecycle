@@ -1,12 +1,12 @@
-# npm-lifecycle [![npm version](https://img.shields.io/npm/v/npm-lifecycle.svg)](https://npm.im/npm-lifecycle) [![license](https://img.shields.io/npm/l/npm-lifecycle.svg)](https://npm.im/npm-lifecycle) [![Travis](https://img.shields.io/travis/npm/npm-lifecycle/latest.svg)](https://travis-ci.org/npm/npm-lifecycle) [![AppVeyor](https://img.shields.io/appveyor/ci/npm/npm-lifecycle/latest.svg)](https://ci.appveyor.com/project/npm/npm-lifecycle) [![Coverage Status](https://coveralls.io/repos/github/npm/npm-lifecycle/badge.svg?branch=latest)](https://coveralls.io/github/npm/npm-lifecycle?branch=latest)
+# @pnpm/npm-lifecycle
 
-[`npm-lifecycle`](https://github.com/npm/npm-lifecycle) is a standalone library for
+[`@pnpm/npm-lifecycle`](https://github.com/pnpm/npm-lifecycle) is a standalone library for
 executing packages' lifecycle scripts. It is extracted from npm itself and
 intended to be fully compatible with the way npm executes individual scripts.
 
 ## Install
 
-`$ npm install npm-lifecycle`
+`$ pnpm add @pnpm/npm-lifecycle`
 
 ## Table of Contents
 
@@ -50,3 +50,7 @@ passed to the child process. `[0, 1, 2]` by default.
 ```javascript
 lifecycle()
 ```
+
+## License
+
+Artistic-2.0

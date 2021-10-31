@@ -1,6 +1,6 @@
 {
-  "name": "@zkochan/npm-lifecycle",
-  "version": "5.1.1",
+  "name": "@pnpm/npm-lifecycle",
+  "version": "1.0.0",
   "description": "JavaScript package lifecycle hook runner",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/npm/lifecycle.git"
+    "url": "git://github.com/pnpm/npm-lifecycle.git"
   },
   "keywords": [
     "npm",
@@ -28,9 +28,9 @@
     "node": ">=12.17"
   },
   "bugs": {
-    "url": "https://github.com/npm/lifecycle/issues"
+    "url": "https://github.com/pnpm/npm-lifecycle/issues"
   },
-  "homepage": "https://github.com/npm/lifecycle#readme",
+  "homepage": "https://github.com/pnpm/npm-lifecycle#readme",
   "dependencies": {
     "@pnpm/byline": "^1.0.0",
     "@yarnpkg/shell": "^2.4.1",
