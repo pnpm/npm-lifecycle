@@ -53,7 +53,7 @@
   },
   "files": [
     "index.js",
-    "lib/spawn.js",
+    "lib",
     "node-gyp-bin"
   ]
 }
