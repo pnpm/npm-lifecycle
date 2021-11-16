@@ -12,10 +12,10 @@ const fs = require('fs')
 const chain = require('slide').chain
 const uidNumber = require('uid-number')
 const umask = require('umask')
-const which = require('which')
 const byline = require('@pnpm/byline')
 const resolveFrom = require('resolve-from')
 const { PassThrough } = require('stream')
+const extendPath = require('./lib/extendPath')
 
 let DEFAULT_NODE_GYP_PATH
 try {
@@ -119,27 +119,7 @@ function _incorrectWorkingDirectory (wd, pkg) {
 }
 
 function lifecycle_ (pkg, stage, wd, opts, env, cb) {
-  const pathArr = [...opts.extraBinPaths || []]
-  const p = wd.split(/[\\/]node_modules[\\/]/)
-  let acc = path.resolve(p.shift())
-
-  p.forEach(pp => {
-    pathArr.unshift(path.join(acc, 'node_modules', '.bin'))
-    acc = path.join(acc, 'node_modules', pp)
-  })
-  pathArr.unshift(path.join(acc, 'node_modules', '.bin'))
-
-  // we also unshift the bundled node-gyp-bin folder so that
-  // the bundled one will be used for installing things.
-  pathArr.unshift(path.join(__dirname, 'node-gyp-bin'))
-
-  if (shouldPrependCurrentNodeDirToPATH(opts)) {
-    // prefer current node interpreter in child scripts
-    pathArr.push(path.dirname(process.execPath))
-  }
-
-  if (env[PATH]) pathArr.push(env[PATH])
-  env[PATH] = pathArr.join(process.platform === 'win32' ? ';' : ':')
+  env[PATH] = extendPath(wd, env[PATH], path.join(__dirname, 'node-gyp-bin'), opts)
 
   let packageLifecycle = pkg.scripts && pkg.scripts.hasOwnProperty(stage)
 
@@ -173,40 +153,6 @@ function lifecycle_ (pkg, stage, wd, opts, env, cb) {
     ],
     done
   )
-}
-
-function shouldPrependCurrentNodeDirToPATH (opts) {
-  const cfgsetting = opts.scriptsPrependNodePath
-  if (cfgsetting === false) return false
-  if (cfgsetting === true) return true
-
-  let isDifferentNodeInPath
-
-  const isWindows = process.platform === 'win32'
-  let foundExecPath
-  try {
-    foundExecPath = which.sync(path.basename(process.execPath), { pathExt: isWindows ? ';' : ':' })
-    // Apply `fs.realpath()` here to avoid false positives when `node` is a symlinked executable.
-    isDifferentNodeInPath = fs.realpathSync(process.execPath).toUpperCase() !==
-        fs.realpathSync(foundExecPath).toUpperCase()
-  } catch (e) {
-    isDifferentNodeInPath = true
-  }
-
-  if (cfgsetting === 'warn-only') {
-    if (isDifferentNodeInPath && !shouldPrependCurrentNodeDirToPATH.hasWarned) {
-      if (foundExecPath) {
-        opts.log.warn('lifecycle', 'The node binary used for scripts is', foundExecPath, 'but npm is using', process.execPath, 'itself. Use the `--scripts-prepend-node-path` option to include the path for the node binary npm was executed with.')
-      } else {
-        opts.log.warn('lifecycle', 'npm is using', process.execPath, 'but there is no node binary in the current PATH. Use the `--scripts-prepend-node-path` option to include the path for the node binary npm was executed with.')
-      }
-      shouldPrependCurrentNodeDirToPATH.hasWarned = true
-    }
-
-    return false
-  }
-
-  return isDifferentNodeInPath
 }
 
 function validWd (d, cb) {
