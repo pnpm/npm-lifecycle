@@ -8,7 +8,7 @@
     "postrelease": "npm publish && git push --follow-tags",
     "pretest": "standard",
     "release": "standard-version -s",
-    "test": "tap -J --coverage test/*.js",
+    "test": "tap -J --no-coverage test/*.js",
     "update-coc": "weallbehave -o . && git add CODE_OF_CONDUCT.md && git commit -m 'docs(coc): updated CODE_OF_CONDUCT.md'",
     "update-contrib": "weallcontribute -o . && git add CONTRIBUTING.md && git commit -m 'docs(contributing): updated CONTRIBUTING.md'"
   },
@@ -47,7 +47,7 @@
     "sinon": "10.0.0",
     "standard": "12.0.1",
     "standard-version": "9.1.1",
-    "tap": "14.11.0",
+    "tap": "15.1.2",
     "weallbehave": "1.2.0",
     "weallcontribute": "1.0.9"
   },
