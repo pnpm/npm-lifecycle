@@ -2,7 +2,6 @@
 
 exports = module.exports = lifecycle
 exports.makeEnv = makeEnv
-exports._incorrectWorkingDirectory = _incorrectWorkingDirectory
 
 const spawn = require('./lib/spawn')
 const { execute } = require('@yarnpkg/shell')
@@ -75,12 +74,6 @@ function lifecycle (pkg, stage, wd, opts) {
       validWd(wd || path.resolve(opts.dir, pkg.name), (er, wd) => {
         if (er) return reject(er)
 
-        if ((wd.indexOf(opts.dir) !== 0 || _incorrectWorkingDirectory(wd, pkg)) &&
-            !opts.unsafePerm && pkg.scripts[stage]) {
-          opts.log.warn(`"${stage}" script of "${pkg._id}" inside "${wd}" is skipped as the working directory seems suspicious. To run this lifecycle script anyway, use "--unsafe-perm".`)
-          return resolve()
-        }
-
         // set the env variables, then run scripts as a child process.
         const env = makeEnv(pkg, opts)
         env.npm_lifecycle_event = stage
@@ -112,10 +105,6 @@ function lifecycle (pkg, stage, wd, opts) {
       })
     })
   })
-}
-
-function _incorrectWorkingDirectory (wd, pkg) {
-  return wd.lastIndexOf(pkg.name) !== wd.length - pkg.name.length
 }
 
 function lifecycle_ (pkg, stage, wd, opts, env, cb) {
