@@ -54,5 +54,11 @@
     "index.js",
     "lib",
     "node-gyp-bin"
-  ]
+  ],
+  "publishConfig": {
+    "executableFiles": [
+      "./node-gyp-bin/node-gyp",
+      "./node-gyp-bin/node-gyp.cmd"
+    ]
+  }
 }
