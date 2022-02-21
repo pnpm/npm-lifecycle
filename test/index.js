@@ -33,6 +33,18 @@ test('_incorrectWorkingDirectory: rejects wd from other packages', function (t) 
   t.end()
 })
 
+test('_incorrectWorkingDirectory: trust docker and CI and CodeSpaces', function (t) {
+  process.env.CODESPACES = true
+  const wd = '/workspaces/time'
+  const pkg = {
+    name: 'time2'
+  }
+
+  t.equal(lifecycle._incorrectWorkingDirectory(wd, pkg), false)
+  t.end()
+  process.env.CODESPACES = false
+})
+
 test('runs scripts from .hooks directory even if no script is present in package.json', function (t) {
   const fixture = path.join(__dirname, 'fixtures', 'has-hooks')
 

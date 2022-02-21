@@ -16,6 +16,7 @@ const byline = require('@pnpm/byline')
 const resolveFrom = require('resolve-from')
 const { PassThrough } = require('stream')
 const extendPath = require('./lib/extendPath')
+const isDocker = require('./lib/isDocker')
 
 let DEFAULT_NODE_GYP_PATH
 try {
@@ -115,6 +116,9 @@ function lifecycle (pkg, stage, wd, opts) {
 }
 
 function _incorrectWorkingDirectory (wd, pkg) {
+  if (process.env.CI || process.env.CODESPACES || isDocker()) {
+    return false;
+  }
   return wd.lastIndexOf(pkg.name) !== wd.length - pkg.name.length
 }
 
