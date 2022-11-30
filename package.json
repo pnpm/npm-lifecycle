@@ -33,6 +33,7 @@
   "homepage": "https://github.com/pnpm/npm-lifecycle#readme",
   "dependencies": {
     "@pnpm/byline": "^1.0.0",
+    "@pnpm/error": "^4.0.0",
     "@yarnpkg/shell": "3.2.0-rc.8",
     "node-gyp": "^8.4.1",
     "resolve-from": "^5.0.0",
