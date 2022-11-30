@@ -12,6 +12,7 @@ const chain = require('slide').chain
 const uidNumber = require('uid-number')
 const umask = require('umask')
 const byline = require('@pnpm/byline')
+const { PnpmError } = require('@pnpm/error')
 const resolveFrom = require('resolve-from')
 const { PassThrough } = require('stream')
 const extendPath = require('./lib/extendPath')
@@ -276,13 +277,15 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   proc.on('error', procError)
   proc.on('close', (code, signal) => {
     opts.log.silly('lifecycle', logid(pkg, stage), 'Returned: code:', code, ' signal:', signal)
+    let err
     if (signal) {
+      err = new PnpmError('CHILD_PROCESS_FAILED', `Command failed with signal "${signal}"`)
       process.kill(process.pid, signal)
     } else if (code) {
-      var er = new Error(`Exit status ${code}`)
-      er.errno = code
+     err = new PnpmError('CHILD_PROCESS_FAILED', `Exit status ${code}`)
+     err.errno = code
     }
-    procError(er)
+    procError(err)
   })
   byline(proc.stdout).on('data', data => {
     opts.log.verbose('lifecycle', logid(pkg, stage), 'stdout', data.toString())

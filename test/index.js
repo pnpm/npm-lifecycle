@@ -159,3 +159,37 @@ test('makeEnv', function (t) {
   t.equal('--inspect-brk --abort-on-uncaught-exception', env.NODE_OPTIONS, 'nodeOptions sets NODE_OPTIONS')
   t.end()
 })
+
+test('throw error signal kills child', async function (t) {
+  const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
+
+  const verbose = sinon.spy()
+  const silly = sinon.spy()
+
+  const stubProcessExit = sinon.stub(process, 'kill').callsFake(noop)
+
+  const log = {
+    level: 'silent',
+    info: noop,
+    warn: noop,
+    silly,
+    verbose,
+    pause: noop,
+    resume: noop,
+    clearProgress: noop,
+    showProgress: noop
+  }
+
+  const dir = fixture
+  const pkg = require(path.join(fixture, 'package.json'))
+
+  t.rejects(async () => {
+    await lifecycle(pkg, 'signal-exit', fixture, {
+      stdio: 'pipe',
+      log,
+      dir,
+      config: {}
+    })
+    stubProcessExit.restore()
+  })
+})
