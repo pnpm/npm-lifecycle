@@ -276,11 +276,14 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   proc.on('error', procError)
   proc.on('close', (code, signal) => {
     opts.log.silly('lifecycle', logid(pkg, stage), 'Returned: code:', code, ' signal:', signal)
+    var er
     if (signal) {
+      er = new Error(`Command failed with signal "${signal}"`)
       process.kill(process.pid, signal)
-    } else if (code) {
-      var er = new Error(`Exit status ${code}`)
-      er.errno = code
+    } 
+    if (code) {
+     er = new Error(`Exit status ${code}`)
+     er.errno = code
     }
     procError(er)
   })
