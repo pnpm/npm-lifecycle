@@ -183,13 +183,72 @@ test('throw error signal kills child', async function (t) {
   const dir = fixture
   const pkg = require(path.join(fixture, 'package.json'))
 
-  t.rejects(async () => {
-    await lifecycle(pkg, 'signal-exit', fixture, {
+  await t.rejects(async () => {
+    await lifecycle(pkg, 'signal-abrt', fixture, {
       stdio: 'pipe',
       log,
       dir,
       config: {}
     })
-    stubProcessExit.restore()
   })
+
+  stubProcessExit.restore()
+})
+
+test('no error on INT signal from child', async function (t) {
+  const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
+
+  const verbose = sinon.spy()
+  const silly = sinon.spy()
+  const info = sinon.spy()
+
+  const stubProcessExit = sinon.stub(process, 'kill').callsFake(noop)
+
+  const log = {
+    level: 'silent',
+    info,
+    warn: noop,
+    silly,
+    verbose,
+    pause: noop,
+    resume: noop,
+    clearProgress: noop,
+    showProgress: noop
+  }
+
+  const dir = fixture
+  const pkg = require(path.join(fixture, 'package.json'))
+
+  await t.resolves(async () => {
+    await lifecycle(pkg, 'signal-int', fixture, {
+      stdio: 'pipe',
+      log,
+      dir,
+      config: {}
+    })
+  })
+  
+  stubProcessExit.restore()
+
+  t.ok(
+    !info.calledWithMatch(
+      'lifecycle',
+      'undefined~signal-int:',
+      'Failed to exec signal-int script'
+    ),
+    'INT signal intercepted incorrectly'
+  )
+
+  t.ok(
+    silly.calledWithMatch(
+      'lifecycle',
+      'undefined~signal-int:',
+      'Returned: code:',
+      null,
+      ' signal:',
+      'SIGINT'
+    ),
+    'INT signal reported'
+  )
+  
 })

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "postinstall": "node postinstall",
-    "signal-exit": "echo 'signal-exit script' && kill -s ABRT $$"
+    "signal-abrt": "echo 'signal-exit script' && kill -s ABRT $$",
+    "signal-int": "echo 'signal-int script' && kill -s INT $$"
   }
 }

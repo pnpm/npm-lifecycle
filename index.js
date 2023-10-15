@@ -278,7 +278,7 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   proc.on('close', (code, signal) => {
     opts.log.silly('lifecycle', logid(pkg, stage), 'Returned: code:', code, ' signal:', signal)
     let err
-    if (signal) {
+    if (signal && signal !== "SIGINT") {
       err = new PnpmError('CHILD_PROCESS_FAILED', `Command failed with signal "${signal}"`)
       process.kill(process.pid, signal)
     } else if (code) {
@@ -304,7 +304,7 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
       if (er.code !== 'EPERM') {
         er.code = 'ELIFECYCLE'
       }
-      fs.stat(opts.dir, (statError, d) => {
+      fs.stat(opts.dir, (statError) => {
         if (statError && statError.code === 'ENOENT' && opts.dir.split(path.sep).slice(-1)[0] === 'node_modules') {
           opts.log.warn('', 'Local package.json exists, but node_modules missing, did you mean to install?')
         }
