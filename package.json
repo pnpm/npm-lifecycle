@@ -33,14 +33,14 @@
   "homepage": "https://github.com/pnpm/npm-lifecycle#readme",
   "dependencies": {
     "@pnpm/byline": "^1.0.0",
-    "@pnpm/error": "^4.0.0",
+    "@pnpm/error": "^5.0.2",
     "@yarnpkg/shell": "3.2.5",
-    "node-gyp": "^8.4.1",
+    "node-gyp": "^9.4.0",
     "resolve-from": "^5.0.0",
     "slide": "^1.1.6",
     "uid-number": "0.0.6",
     "umask": "^1.1.0",
-    "which": "^2.0.2"
+    "which": "^4.0.0"
   },
   "devDependencies": {
     "nyc": "15.1.0",
