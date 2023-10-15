@@ -111,7 +111,7 @@ function lifecycle (pkg, stage, wd, opts) {
 function lifecycle_ (pkg, stage, wd, opts, env, cb) {
   env[PATH] = extendPath(wd, env[PATH], path.join(__dirname, 'node-gyp-bin'), opts)
 
-  let packageLifecycle = pkg.scripts && pkg.scripts.hasOwnProperty(stage)
+  let packageLifecycle = pkg.scripts && Object.prototype.hasOwnProperty.call(pkg.scripts, stage)
 
   if (opts.ignoreScripts) {
     opts.log.info('lifecycle', logid(pkg, stage), 'ignored because ignore-scripts is set to true', pkg._id)
@@ -219,8 +219,8 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
 
   const conf = {
     cwd: wd,
-    env: env,
-    stdio: opts.stdio || [ 0, 1, 2 ]
+    env,
+    stdio: opts.stdio || [0, 1, 2]
   }
 
   if (!unsafe) {
@@ -262,8 +262,9 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
     execute(cmd, [], execOpts)
       .then((code) => {
         opts.log.silly('lifecycle', logid(pkg, stage), 'Returned: code:', code)
+        let er
         if (code) {
-          var er = new Error(`Exit status ${code}`)
+          er = new Error(`Exit status ${code}`)
           er.errno = code
         }
         procError(er)
@@ -278,12 +279,12 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   proc.on('close', (code, signal) => {
     opts.log.silly('lifecycle', logid(pkg, stage), 'Returned: code:', code, ' signal:', signal)
     let err
-    if (signal && signal !== "SIGINT") {
+    if (signal && signal !== 'SIGINT') {
       err = new PnpmError('CHILD_PROCESS_FAILED', `Command failed with signal "${signal}"`)
       process.kill(process.pid, signal)
     } else if (code) {
-     err = new PnpmError('CHILD_PROCESS_FAILED', `Exit status ${code}`)
-     err.errno = code
+      err = new PnpmError('CHILD_PROCESS_FAILED', `Exit status ${code}`)
+      err.errno = code
     }
     procError(err)
   })
@@ -347,7 +348,7 @@ function makeEnv (data, opts, prefix, env) {
   prefix = prefix || 'npm_package_'
   if (!env) {
     env = {}
-    for (var i in process.env) {
+    for (const i in process.env) {
       if (!i.match(/^npm_/) && (!i.match(/^PATH$/i) || i === PATH)) {
         env[i] = process.env[i]
       }
@@ -355,7 +356,7 @@ function makeEnv (data, opts, prefix, env) {
 
     // express and others respect the NODE_ENV value.
     if (opts.production) env.NODE_ENV = 'production'
-  } else if (!data.hasOwnProperty('_lifecycleEnv')) {
+  } else if (!Object.prototype.hasOwnProperty.call(data, '_lifecycleEnv')) {
     Object.defineProperty(data, '_lifecycleEnv',
       {
         value: env,
@@ -366,7 +367,7 @@ function makeEnv (data, opts, prefix, env) {
 
   if (opts.nodeOptions) env.NODE_OPTIONS = opts.nodeOptions
 
-  for (i in data) {
+  for (const i in data) {
     if (i.charAt(0) !== '_') {
       const envKey = (prefix + i).replace(/[^a-zA-Z0-9_]/g, '_')
       if (i === 'readme') {

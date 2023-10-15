@@ -127,7 +127,7 @@ test('makeEnv', function (t) {
   }
   const config = {
     enteente: Infinity,
-    '_privateVar': 1,
+    _privateVar: 1,
     '_myPackage:myPrivateVar': 1,
     'myPackage:bar': 2,
     'myPackage:foo': 3,
@@ -227,7 +227,7 @@ test('no error on INT signal from child', async function (t) {
       config: {}
     })
   })
-  
+
   stubProcessExit.restore()
 
   t.ok(
@@ -250,5 +250,4 @@ test('no error on INT signal from child', async function (t) {
     ),
     'INT signal reported'
   )
-  
 })
