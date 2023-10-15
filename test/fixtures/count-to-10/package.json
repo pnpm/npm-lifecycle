@@ -4,6 +4,6 @@
   "scripts": {
     "postinstall": "node postinstall",
     "signal-abrt": "echo 'signal-exit script' && kill -s ABRT $$",
-    "signal-int": "node -e \"console.log('signal-int script');process.kill(process.pid, 'SIGINT');\""
+    "signal-int": "echo \"signal-int script\" && taskkill /F /PID %%"
   }
 }
