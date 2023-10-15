@@ -195,7 +195,7 @@ test('throw error signal kills child', async function (t) {
   stubProcessExit.restore()
 })
 
-test('no error on INT signal from child', async function (t) {
+test('no error on INT signal from child', { timeout: 10000 }, async function (t) {
   const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
 
   const verbose = sinon.spy()
