@@ -43,6 +43,7 @@
     "which": "^4.0.0"
   },
   "devDependencies": {
+    "is-windows": "^1.0.2",
     "nyc": "15.1.0",
     "sinon": "16.1.0",
     "standard": "17.1.0",

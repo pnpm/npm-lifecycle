@@ -4,6 +4,7 @@ const test = require('tap').test
 const sinon = require('sinon')
 const lifecycle = require('../index.js')
 const path = require('path')
+const isWindows = require('is-windows')
 
 function noop () {}
 
@@ -196,6 +197,10 @@ test('throw error signal kills child', async function (t) {
 })
 
 test('no error on INT signal from child', async function (t) {
+  if (isWindows()) {
+    // On Windows there is no way to get the INT signal
+    return
+  }
   const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
 
   const verbose = sinon.spy()
