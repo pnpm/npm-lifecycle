@@ -1,6 +1,6 @@
 {
   "name": "@pnpm/npm-lifecycle",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "JavaScript package lifecycle hook runner",
   "main": "index.js",
   "scripts": {
@@ -33,9 +33,9 @@
   "homepage": "https://github.com/pnpm/npm-lifecycle#readme",
   "dependencies": {
     "@pnpm/byline": "^1.0.0",
-    "@pnpm/error": "^5.0.2",
+    "@pnpm/error": "^6.0.0",
     "@yarnpkg/shell": "4.0.0",
-    "node-gyp": "^10.0.1",
+    "node-gyp": "^10.1.0",
     "resolve-from": "^5.0.0",
     "slide": "^1.1.6",
     "uid-number": "0.0.6",
