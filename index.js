@@ -241,6 +241,20 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
     conf.windowsVerbatimArguments = true
   }
 
+  // Spawning .bat and .cmd files on Windows requires the "shell" option to
+  // spawn to be set. Otherwise spawn will throw with EINVAL.
+  //
+  // https://nodejs.org/api/child_process.html#spawning-bat-and-cmd-files-on-windows
+  // https://nodejs.org/en/blog/vulnerability/april-2024-security-releases-2
+  //
+  // The shell option is security sensitive. It should make sense for this
+  // usecase since scripts in package.json intentionally run on the shell.
+  // Avoiding setting the shell option in all cases to preserve existing
+  // behavior on non-Windows platforms.
+  if (process.platform === 'win32' && customShell && (customShell.endsWith('.bat') || customShell.endsWith('.cmd'))) {
+    conf.shell = true
+  }
+
   opts.log.verbose('lifecycle', logid(pkg, stage), 'PATH:', env[PATH])
   opts.log.verbose('lifecycle', logid(pkg, stage), 'CWD:', wd)
   opts.log.silly('lifecycle', logid(pkg, stage), 'Args:', [shFlag, cmd])
