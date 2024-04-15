@@ -253,6 +253,10 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   // behavior on non-Windows platforms.
   if (process.platform === 'win32' && customShell && (customShell.endsWith('.bat') || customShell.endsWith('.cmd'))) {
     conf.shell = true
+
+    // Avoid parsing arguments before passing them to the customShell. The
+    // custom shell is expected to parse args.
+    conf.windowsVerbatimArguments = true
   }
 
   opts.log.verbose('lifecycle', logid(pkg, stage), 'PATH:', env[PATH])
