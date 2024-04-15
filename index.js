@@ -233,9 +233,7 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
 
   const customShell = opts.scriptShell
 
-  if (customShell) {
-    sh = customShell
-  } else if (process.platform === 'win32') {
+  if (!customShell && process.platform === 'win32') {
     sh = process.env.comspec || 'cmd'
     shFlag = '/d /s /c'
     conf.windowsVerbatimArguments = true
@@ -273,7 +271,21 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
     return
   }
 
-  const proc = spawn(sh, [shFlag, cmd], conf, opts.log)
+  // The @npm/run-script library uses spawn's shell option when the script-shell
+  // .npmrc option is set. Do the same to match the behavior of npm.
+  //
+  // Note that this is required if script-shell is set to a .bat or .cmd file.
+  // On Windows, this will throw "spawn EINVAL" if spawn's shell option is
+  // unset.
+  //
+  // https://nodejs.org/api/child_process.html#spawning-bat-and-cmd-files-on-windows
+  // https://nodejs.org/en/blog/vulnerability/april-2024-security-releases-2
+  //
+  // The shell option is security sensitive, but it should make sense for this
+  // usecase since scripts in package.json intentionally run on the shell.
+  const proc = customShell
+    ? spawn(cmd, [], { ...conf, shell: customShell }, opts.log)
+    : spawn(sh, [shFlag, cmd], conf, opts.log)
 
   proc.on('error', procError)
   proc.on('close', (code, signal) => {
