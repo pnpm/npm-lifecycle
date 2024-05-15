@@ -425,10 +425,10 @@ function makeEnv (data, opts, prefix, env) {
     i = i.replace(/^_+/, '')
     let k
     if (i.indexOf(namePref) === 0) {
-      k = i.substr(namePref.length).replace(/[^a-zA-Z0-9_]/g, '_')
+      k = i.substring(namePref.length).replace(/[^a-zA-Z0-9_]/g, '_')
       pkgConfig[k] = value
     } else if (i.indexOf(verPref) === 0) {
-      k = i.substr(verPref.length).replace(/[^a-zA-Z0-9_]/g, '_')
+      k = i.substring(verPref.length).replace(/[^a-zA-Z0-9_]/g, '_')
       pkgVerConfig[k] = value
     }
     const envKey = (prefix + i).replace(/[^a-zA-Z0-9_]/g, '_')
