@@ -295,7 +295,7 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
     opts.log.verbose('lifecycle', logid(pkg, stage), 'stderr', data.toString())
   })
   process.once('SIGTERM', procKill)
-  process.once('SIGINT', procInterupt)
+  process.once('SIGINT', procInterrupt)
   process.on('exit', procKill)
 
   function procError (er) {
@@ -316,7 +316,7 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
       er.pkgname = pkg.name
     }
     process.removeListener('SIGTERM', procKill)
-    process.removeListener('SIGTERM', procInterupt)
+    process.removeListener('SIGTERM', procInterrupt)
     process.removeListener('SIGINT', procKill)
     return cb(er)
   }
@@ -326,7 +326,7 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
     called = true
     proc.kill()
   }
-  function procInterupt () {
+  function procInterrupt () {
     proc.kill('SIGINT')
     proc.on('exit', () => {
       process.exit()
