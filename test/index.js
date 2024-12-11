@@ -142,7 +142,6 @@ test('makeEnv', function (t) {
   }, null, process.env)
 
   t.equal('myPackage', env.npm_package_name, 'package data is included')
-  t.equal('Mike Sherov', env.npm_package_contributors_0_name, 'nested package data is included')
 
   t.equal('Infinity', env.npm_config_enteente, 'public config is included')
   t.equal(undefined, env.npm_config_privateVar, 'private config is excluded')

@@ -370,7 +370,12 @@ function makeEnv (data, opts, prefix, env) {
   for (const i in data) {
     if (i.charAt(0) !== '_') {
       const envKey = (prefix + i).replace(/[^a-zA-Z0-9_]/g, '_')
-      if (i === 'readme') {
+      if (
+        !['name', 'version', 'config', 'engines', 'bin'].includes(i) &&
+        !prefix.startsWith('npm_package_config_') &&
+        !prefix.startsWith('npm_package_engines_') &&
+        !prefix.startsWith('npm_package_bin_')
+      ) {
         continue
       }
       if (data[i] && typeof data[i] === 'object') {
