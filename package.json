@@ -35,7 +35,7 @@
     "@pnpm/byline": "^1.0.0",
     "@pnpm/error": "^6.0.0",
     "@yarnpkg/shell": "4.0.0",
-    "node-gyp": "^10.1.0",
+    "node-gyp": "^11.0.0",
     "resolve-from": "^5.0.0",
     "slide": "^1.1.6",
     "uid-number": "0.0.6",
