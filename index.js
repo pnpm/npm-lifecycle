@@ -162,7 +162,7 @@ function runPackageLifecycle (pkg, stage, env, wd, opts, cb) {
   // run package lifecycle scripts in the package root, or the nearest parent.
   const cmd = env.npm_lifecycle_script
 
-  const note = `\n> ${pkg._id} ${stage} ${wd}\n> ${cmd}\n`
+  const note = `$ ${cmd}`
   runCmd(note, cmd, pkg, env, stage, wd, opts, cb)
 }
 
@@ -339,7 +339,7 @@ function runHookLifecycle (pkg, stage, env, wd, opts, cb) {
   hookStat(opts.dir, stage, er => {
     if (er) return cb()
     const cmd = path.join(opts.dir, '.hooks', stage)
-    const note = `\n> ${pkg._id} ${stage} ${wd}\n> ${cmd}`
+    const note = `$ ${cmd}`
     runCmd(note, cmd, pkg, env, stage, wd, opts, cb)
   })
 }
