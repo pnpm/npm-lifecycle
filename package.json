@@ -34,6 +34,7 @@
   "dependencies": {
     "@pnpm/byline": "^1.0.0",
     "@pnpm/error": "^1000.0.2",
+    "@yarnpkg/fslib": "^3.0.0",
     "@yarnpkg/shell": "4.0.0",
     "node-gyp": "^11.1.0",
     "resolve-from": "^5.0.0",
