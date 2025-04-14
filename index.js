@@ -5,6 +5,7 @@ exports.makeEnv = makeEnv
 
 const spawn = require('./lib/spawn')
 const { execute } = require('@yarnpkg/shell')
+const { npath } = require('@yarnpkg/fslib')
 const path = require('path')
 const Stream = require('stream').Stream
 const fs = require('fs')
@@ -246,7 +247,7 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   opts.log.silly('lifecycle', logid(pkg, stage), 'Args:', [shFlag, cmd])
 
   if (opts.shellEmulator) {
-    const execOpts = { cwd: wd, env }
+    const execOpts = { cwd: npath.toPortablePath(wd), env }
     if (opts.stdio === 'pipe') {
       const stdout = new PassThrough()
       const stderr = new PassThrough()
