@@ -1,6 +1,6 @@
 {
   "name": "@pnpm/npm-lifecycle",
-  "version": "1000.0.2",
+  "version": "1000.0.3",
   "description": "JavaScript package lifecycle hook runner",
   "main": "index.js",
   "scripts": {
