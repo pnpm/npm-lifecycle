@@ -68,7 +68,8 @@ test("reports child's output", async (t) => {
   }
   const dir = path.join(__dirname, '..')
 
-  const pkg = require(path.join(fixture, 'package.json'))
+  const pkgFileName = path.resolve(fixture, 'package.json')
+  const pkg = require(pkgFileName)
 
   await lifecycle(pkg, 'postinstall', fixture, {
     stdio: 'pipe',
@@ -102,6 +103,15 @@ test("reports child's output", async (t) => {
       'some error'
     ),
     'stderr reported'
+  )
+  t.ok(
+    verbose.calledWithMatch(
+      'lifecycle',
+      'undefined~postinstall:',
+      'stdout',
+      'package.json'
+    ),
+    'package json reported'
   )
   t.ok(
     silly.calledWithMatch(
