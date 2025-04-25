@@ -80,6 +80,7 @@ function lifecycle (pkg, stage, wd, opts) {
         const env = makeEnv(pkg, opts)
         env.npm_lifecycle_event = stage
         env.npm_node_execpath = env.NODE = env.NODE || process.execPath
+        env.npm_package_json = path.join(wd, 'package.json')
         if (process.pkg != null) {
           // If the pnpm CLI was bundled by vercel/pkg then we cannot use the js path for npm_execpath
           // because in that case the js is in a virtual filesystem inside the executor.
