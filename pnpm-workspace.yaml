@@ -1,3 +1,3 @@
-pnpmfile: node_modules/.pnpm-config/@pnpm/better-defaults/pnpmfile.cjs
 configDependencies:
-  '@pnpm/better-defaults': 0.1.0+sha512-ikR/q6RSGqnn+6SSzmVEC+TgYhwb9OMdjkt0G5aNvZivE5SvsKwfK1lW1UDTLTpBqqVuv0duIz8ko0KdoSfcGw==
+  '@pnpm/better-defaults': 0.2.0+sha512-90iZf6xgZTlNuUVn5djvCXM720TgZrYmmb8jmjIv5c5efx3I46rmCcT2j5nlZJ6VrvghNgUaI2y/rnHe2W4L6g==
+pnpmfile: node_modules/.pnpm-config/@pnpm/better-defaults/pnpmfile.cjs
