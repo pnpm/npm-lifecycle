@@ -1,0 +1,18 @@
+{
+  "name": "sleep",
+  "version": "1.0.0",
+  "//": [
+    "Notes about the sleep-notify script below:",
+    "1)  The complexity of the script is necessary because we're signalling",
+    "    sh only, rather than what Posix shells do on Ctrl-C, which is to",
+    "    send SIGINT to the entire foreground process group.",
+    "2)  We trap SIGINT and exit with a code rather. This avoids the",
+    "    special handling of SIGINT exits which are treated as a success.",
+    "3)  The trap also seems to be necessary to make sh exit promptly.",
+    "4)  We don't want the parent process to send SIGINT to child before it",
+    "    has full started, so we send a signal to parent to coordinate the test."
+  ],
+  "scripts": {
+    "sleep-notify": "trap 'exit 130' SIGINT; kill -USR1 $PPID; for i in {1..100}; do sleep .01; done"
+  }
+}

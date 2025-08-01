@@ -265,3 +265,66 @@ test('no error on INT signal from child', async function (t) {
     'INT signal reported'
   )
 })
+
+test('node exits 130 when it receives SIGINT', async function (t) {
+  if (isWindows()) {
+    // On Windows there is no way to get the INT signal
+    return
+  }
+  const fixture = path.join(__dirname, 'fixtures', 'sleep')
+
+  const verbose = sinon.spy()
+  const silly = sinon.spy()
+  const info = sinon.spy()
+
+  const stubProcessExit = sinon.stub(process, 'exit').callsFake(noop)
+
+  const log = {
+    level: 'silent',
+    info: noop,
+    warn: noop,
+    silly,
+    verbose,
+    pause: noop,
+    resume: noop,
+    clearProgress: noop,
+    showProgress: noop
+  }
+
+  const dir = fixture
+  const pkg = require(path.join(fixture, 'package.json'))
+
+  // On Ctrl-C, posix shells send SIGINT to the foreground process group.
+  // But here we aren't necessarily a process group leader, nor is the
+  // script running as a separate process group. So the best we can do
+  // is send SIGINT and let sh handle it in a slightly different way,
+  // where it waits for the active command to finish...
+  // This is annoying, because it means the lifecycle script sleep has
+  // to finish, so it's set to a relatively low value.
+  process.once('SIGUSR1', () => process.kill(process.pid, 'SIGINT'))
+
+  // We're trapping SIGINT in the script, to avoid the special cased
+  // handling of an exit with an unhandled SIGINT (which is ignored).
+  await t.rejects(async () =>
+    lifecycle(pkg, 'sleep-notify', fixture, {
+      stdio: 'pipe',
+      log,
+      dir,
+      config: {}
+    })
+  )
+
+  stubProcessExit.restore()
+  stubProcessExit.calledOnceWith(130)
+  t.ok(
+    silly.calledWithMatch(
+      'lifecycle',
+      'undefined~sleep-notify:',
+      'Returned: code:',
+      130,
+      ' signal:',
+      null
+    ),
+    'lifecycle script exited with 130'
+  )
+})
