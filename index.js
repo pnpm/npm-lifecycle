@@ -330,7 +330,7 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
     proc.kill()
   }
   function procInterrupt () {
-    proc.on('close', () => process.exit(130))
+    proc.on('exit', () => process.exit(130))
     proc.kill('SIGINT')
     process.once('SIGINT', procKill)
   }
