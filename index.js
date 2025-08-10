@@ -318,8 +318,9 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
       er.pkgname = pkg.name
     }
     process.removeListener('SIGTERM', procKill)
-    process.removeListener('SIGTERM', procInterrupt)
     process.removeListener('SIGINT', procKill)
+    process.removeListener('SIGINT', procInterrupt)
+    process.removeListener('exit', procKill)
     return cb(er)
   }
   let called = false
@@ -330,9 +331,6 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   }
   function procInterrupt () {
     proc.kill('SIGINT')
-    proc.on('exit', () => {
-      process.exit()
-    })
     process.once('SIGINT', procKill)
   }
 }
