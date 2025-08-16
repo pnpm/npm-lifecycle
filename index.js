@@ -281,7 +281,7 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   proc.on('close', (code, signal) => {
     opts.log.silly('lifecycle', logid(pkg, stage), 'Returned: code:', code, ' signal:', signal)
     let err
-    if (signal && signal !== 'SIGINT') {
+    if (signal) {
       err = new PnpmError('CHILD_PROCESS_FAILED', `Command failed with signal "${signal}"`)
       process.kill(process.pid, signal)
     } else if (code) {

@@ -205,7 +205,7 @@ test('throw error signal kills child', async function (t) {
   stubProcessExit.restore()
 })
 
-test('no error on INT signal from child', async function (t) {
+test('exit with error on INT signal from child', async function (t) {
   if (isWindows()) {
     // On Windows there is no way to get the INT signal
     return
@@ -233,7 +233,7 @@ test('no error on INT signal from child', async function (t) {
   const dir = fixture
   const pkg = require(path.join(fixture, 'package.json'))
 
-  await t.resolves(async () => {
+  await t.rejects(async () => {
     await lifecycle(pkg, 'signal-int', fixture, {
       stdio: 'pipe',
       log,
@@ -243,14 +243,15 @@ test('no error on INT signal from child', async function (t) {
   })
 
   stubProcessExit.restore()
+  stubProcessExit.calledOnceWith(process.pid, 'SIGINT')
 
   t.ok(
-    !info.calledWithMatch(
+    info.calledWithMatch(
       'lifecycle',
       'undefined~signal-int:',
       'Failed to exec signal-int script'
     ),
-    'INT signal intercepted incorrectly'
+    'INT signal not intercepted'
   )
 
   t.ok(
