@@ -99,7 +99,15 @@ function lifecycle (pkg, stage, wd, opts) {
 
         // 'nobody' typically doesn't have permission to write to /tmp
         // even if it's never used, sh freaks out.
-        if (!opts.unsafePerm) env.TMPDIR = wd
+        if (!opts.unsafePerm) {
+          const tmpdir = path.join(wd, 'node_modules', '.tmp')
+          try {
+            fs.mkdirSync(tmpdir, { recursive: true })
+          } catch (err) {
+            if (err.code !== 'EEXIST') throw err
+          }
+          env.TMPDIR = tmpdir
+        }
 
         lifecycle_(pkg, stage, wd, opts, env, (er) => {
           if (er) return reject(er)
