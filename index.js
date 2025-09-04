@@ -101,7 +101,11 @@ function lifecycle (pkg, stage, wd, opts) {
         // even if it's never used, sh freaks out.
         if (!opts.unsafePerm) {
           const tmpdir = path.join(wd, 'node_modules')
-          if (!fs.existsSync(tmpdir)) fs.mkdirSync(tmpdir)
+          try {
+            fs.mkdirSync(tmpdir)
+          } catch (err) {
+            if (err.code !== 'EEXIST') throw err
+          }
           env.TMPDIR = tmpdir
         }
 
