@@ -34,9 +34,6 @@ importers:
       uid-number:
         specifier: 0.0.6
         version: 0.0.6
-      umask:
-        specifier: ^1.1.0
-        version: 1.1.0
       which:
         specifier: ^4.0.0
         version: 4.0.0
@@ -2627,9 +2624,6 @@ packages:
   uid-number@0.0.6:
     resolution: {integrity: sha512-c461FXIljswCuscZn67xq9PpszkPT6RjheWFQTgCyabJrTUozElanb0YEqv2UGgk247YpcJkFBuSGNvBlpXM9w==}
     deprecated: This package is no longer supported.
-
-  umask@1.1.0:
-    resolution: {integrity: sha512-lE/rxOhmiScJu9L6RTNVgB/zZbF+vGC0/p6D3xnkAePI2o0sMyFG966iR5Ki50OI/0mNi2yaRnxfLsPmEZF/JA==}
 
   unbox-primitive@1.1.0:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
@@ -5795,8 +5789,6 @@ snapshots:
     optional: true
 
   uid-number@0.0.6: {}
-
-  umask@1.1.0: {}
 
   unbox-primitive@1.1.0:
     dependencies:
