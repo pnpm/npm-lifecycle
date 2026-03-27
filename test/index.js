@@ -37,7 +37,7 @@ function makeLog (overrides = {}) {
   }
 }
 
-test('runs scripts from .hooks directory even if no script is present in package.json', async () => {
+test('runs scripts from .hooks directory even if no script is present in package.json', { skip: process.platform === 'win32' && 'hook scripts without extensions do not work on Windows' }, async () => {
   const fixture = path.join(__dirname, 'fixtures', 'has-hooks')
   const verbose = spy()
   const log = makeLog({ verbose })
