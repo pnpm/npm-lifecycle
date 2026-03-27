@@ -123,55 +123,56 @@ test('makeEnv', () => {
   assert.equal(env.NODE_OPTIONS, '--inspect-brk --abort-on-uncaught-exception', 'nodeOptions sets NODE_OPTIONS')
 })
 
-test('throw error signal kills child', async (t) => {
-  const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
-  const verbose = spy()
-  const silly = spy()
-  const originalKill = process.kill
-  process.kill = noop
-  t.after(() => { process.kill = originalKill })
+test('signal tests', { concurrency: 1 }, async (t) => {
+  await t.test('throw error signal kills child', async (t) => {
+    const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
+    const verbose = spy()
+    const silly = spy()
+    t.mock.method(process, 'kill', noop)
 
-  const log = makeLog({ verbose, silly })
-  const pkg = require(path.join(fixture, 'package.json'))
+    const log = makeLog({ verbose, silly })
+    const pkg = require(path.join(fixture, 'package.json'))
 
-  await assert.rejects(() =>
-    lifecycle(pkg, 'signal-abrt', fixture, {
-      stdio: 'pipe',
-      log,
-      dir: fixture,
-      config: {}
-    })
-  )
-})
+    await assert.rejects(() =>
+      lifecycle(pkg, 'signal-abrt', fixture, {
+        stdio: 'pipe',
+        log,
+        dir: fixture,
+        config: {}
+      })
+    )
+  })
 
-test('exit with error on INT signal from child', { skip: process.platform === 'win32' && 'no SIGINT on Windows' }, async (t) => {
-  const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
-  const verbose = spy()
-  const silly = spy()
-  const info = spy()
-  const killCalls = []
-  const originalKill = process.kill
-  process.kill = (...args) => { killCalls.push(args) }
-  t.after(() => { process.kill = originalKill })
+  await t.test('exit with error on INT signal from child', { skip: process.platform === 'win32' && 'no SIGINT on Windows' }, async (t) => {
+    const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
+    const verbose = spy()
+    const silly = spy()
+    const info = spy()
+    const mock = t.mock.method(process, 'kill', noop)
 
-  const log = makeLog({ verbose, silly, info })
-  const pkg = require(path.join(fixture, 'package.json'))
+    const log = makeLog({ verbose, silly, info })
+    const pkg = require(path.join(fixture, 'package.json'))
 
-  await assert.rejects(() =>
-    lifecycle(pkg, 'signal-int', fixture, {
-      stdio: 'pipe',
-      log,
-      dir: fixture,
-      config: {}
-    })
-  )
+    await assert.rejects(() =>
+      lifecycle(pkg, 'signal-int', fixture, {
+        stdio: 'pipe',
+        log,
+        dir: fixture,
+        config: {}
+      })
+    )
 
-  assert.ok(
-    info.calledWithMatch('lifecycle', 'undefined~signal-int:', 'Failed to exec signal-int script'),
-    'INT signal not intercepted'
-  )
-  assert.ok(
-    silly.calledWithMatch('lifecycle', 'undefined~signal-int:', 'Returned: code:', null, ' signal:', 'SIGINT'),
-    'INT signal reported'
-  )
+    assert.ok(
+      mock.mock.calls.some(c => c.arguments[0] === process.pid && c.arguments[1] === 'SIGINT'),
+      'process.kill called with SIGINT'
+    )
+    assert.ok(
+      info.calledWithMatch('lifecycle', 'undefined~signal-int:', 'Failed to exec signal-int script'),
+      'INT signal not intercepted'
+    )
+    assert.ok(
+      silly.calledWithMatch('lifecycle', 'undefined~signal-int:', 'Returned: code:', null, ' signal:', 'SIGINT'),
+      'INT signal reported'
+    )
+  })
 })
