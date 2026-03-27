@@ -1,24 +1,20 @@
-'use strict'
+import { spawn } from './lib/spawn.js'
+import { execute } from '@yarnpkg/shell'
+import { npath } from '@yarnpkg/fslib'
+import path from 'path'
+import fs from 'fs'
+import { createRequire } from 'module'
+import uidNumber from 'uid-number'
+import byline from '@pnpm/byline'
+import { PnpmError } from '@pnpm/error'
+import { PassThrough } from 'stream'
+import { extendPath } from './lib/extendPath.js'
 
-exports = module.exports = lifecycle
-exports.makeEnv = makeEnv
-
-const spawn = require('./lib/spawn')
-const { execute } = require('@yarnpkg/shell')
-const { npath } = require('@yarnpkg/fslib')
-const path = require('path')
-const fs = require('fs')
-const chain = require('slide').chain
-const uidNumber = require('uid-number')
-const byline = require('@pnpm/byline')
-const { PnpmError } = require('@pnpm/error')
-const resolveFrom = require('resolve-from')
-const { PassThrough } = require('stream')
-const extendPath = require('./lib/extendPath')
+const require = createRequire(import.meta.url)
 
 let DEFAULT_NODE_GYP_PATH
 try {
-  DEFAULT_NODE_GYP_PATH = resolveFrom(__dirname, 'node-gyp/bin/node-gyp')
+  DEFAULT_NODE_GYP_PATH = require.resolve('node-gyp/bin/node-gyp')
 } catch (err) {}
 
 const hookStatCache = new Map()
@@ -53,7 +49,7 @@ function hookStat (dir, stage, cb) {
   return setImmediate(() => cb(cachedStatError))
 }
 
-function lifecycle (pkg, stage, wd, opts) {
+export function lifecycle (pkg, stage, wd, opts) {
   return new Promise((resolve, reject) => {
     while (pkg && pkg._data) pkg = pkg._data
     if (!pkg) return reject(new Error('Invalid package data'))
@@ -85,7 +81,7 @@ function lifecycle (pkg, stage, wd, opts) {
           // Instead, we use the path to the exe file.
           env.npm_execpath = process.execPath
         } else {
-          env.npm_execpath = require.main ? require.main.filename : process.cwd()
+          env.npm_execpath = process.argv[1] || process.cwd()
         }
         env.INIT_CWD = process.cwd()
         env.npm_config_node_gyp = env.npm_config_node_gyp || DEFAULT_NODE_GYP_PATH
@@ -117,7 +113,7 @@ function lifecycle (pkg, stage, wd, opts) {
 }
 
 function lifecycle_ (pkg, stage, wd, opts, env, cb) {
-  env[PATH] = extendPath(wd, env[PATH], path.join(__dirname, 'node-gyp-bin'), opts)
+  env[PATH] = extendPath(wd, env[PATH], path.join(import.meta.dirname, 'node-gyp-bin'), opts)
 
   let packageLifecycle = pkg.scripts && Object.prototype.hasOwnProperty.call(pkg.scripts, stage)
 
@@ -144,13 +140,25 @@ function lifecycle_ (pkg, stage, wd, opts, env, cb) {
     cb(er)
   }
 
-  chain(
-    [
-      packageLifecycle && [runPackageLifecycle, pkg, stage, env, wd, opts],
-      [runHookLifecycle, pkg, stage, env, wd, opts]
-    ],
-    done
-  )
+  const tasks = [
+    packageLifecycle && [runPackageLifecycle, pkg, stage, env, wd, opts],
+    [runHookLifecycle, pkg, stage, env, wd, opts]
+  ]
+
+  let i = 0
+  function next (er) {
+    if (er) return done(er)
+    while (i < tasks.length) {
+      const task = tasks[i++]
+      if (task) {
+        const [fn, ...args] = task
+        fn(...args, next)
+        return
+      }
+    }
+    done()
+  }
+  next()
 }
 
 function validWd (d, cb) {
@@ -350,7 +358,7 @@ function runHookLifecycle (pkg, stage, env, wd, opts, cb) {
   })
 }
 
-function makeEnv (data, opts, prefix, env) {
+export function makeEnv (data, opts, prefix, env) {
   prefix = prefix || 'npm_package_'
   if (!env) {
     env = {}

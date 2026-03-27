@@ -1,10 +1,13 @@
-'use strict'
+import { test } from 'tap'
+import sinon from 'sinon'
+import { lifecycle, makeEnv } from '../index.js'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { createRequire } from 'module'
+import isWindows from 'is-windows'
 
-const test = require('tap').test
-const sinon = require('sinon')
-const lifecycle = require('../index.js')
-const path = require('path')
-const isWindows = require('is-windows')
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const require = createRequire(import.meta.url)
 
 function noop () {}
 
@@ -146,7 +149,7 @@ test('makeEnv', function (t) {
     'myPackage@1.0.0:foo': 5
   }
 
-  const env = lifecycle.makeEnv(pkg, {
+  const env = makeEnv(pkg, {
     config,
     nodeOptions: '--inspect-brk --abort-on-uncaught-exception'
   }, null, process.env)

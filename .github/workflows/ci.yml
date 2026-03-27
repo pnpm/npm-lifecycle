@@ -15,9 +15,8 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - '16.14'
-          - '18'
-          - '20'
+          - '22'
+          - '24'
         platform:
           - ubuntu-latest
           - windows-latest
@@ -27,13 +26,13 @@ jobs:
 
     steps:
     - name: Checkout Commit
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Install pnpm
       uses: pnpm/action-setup@v4.1.0
       with:
         standalone: true
     - name: Setup Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node }}
         cache: 'pnpm'

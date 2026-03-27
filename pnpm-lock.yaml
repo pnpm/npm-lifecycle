@@ -1,3 +1,97 @@
+---
+lockfileVersion: '9.0'
+
+importers:
+
+  .:
+    configDependencies: {}
+    packageManagerDependencies:
+      '@pnpm/exe':
+        specifier: 10.13.1
+        version: 10.13.1
+      pnpm:
+        specifier: 10.13.1
+        version: 10.13.1
+
+packages:
+
+  '@pnpm/exe@10.13.1':
+    resolution: {integrity: sha512-vdF5yOk28VsPFfG9AY+gwLZr4Emdd4qnfgkqrGcCI9PGldampfuOrWJw3WpLaaavLG0f3dssC2pUOCxoVH2S9w==}
+    hasBin: true
+
+  '@pnpm/linux-arm64@10.13.1':
+    resolution: {integrity: sha512-13YlAjbfxODiNa0XdWaA2ZHF0eO6LcHtSFAvp+uuBQp13gxZ8bYsQVkZ84rXE9O2fHpge+MnQSnbrRtgCc6NDA==}
+    cpu: [arm64]
+    os: [linux]
+    hasBin: true
+
+  '@pnpm/linux-x64@10.13.1':
+    resolution: {integrity: sha512-3REMmH14V5TIG79Wia+rEsoQx0gcFNh0YNZ19L79WqckbllHxsreKH/8HF4DwnylMPcRHqxASkxiz6Be6NIkfw==}
+    cpu: [x64]
+    os: [linux]
+    hasBin: true
+
+  '@pnpm/macos-arm64@10.13.1':
+    resolution: {integrity: sha512-5I9iGDPR4vto6dJDlkYeAV1lf+fy5j3gBhEAnfVH0xXCgmBl73ghWStokYjdyXGgKNqxc0HixUiXUJEtvvQd+A==}
+    cpu: [arm64]
+    os: [darwin]
+    hasBin: true
+
+  '@pnpm/macos-x64@10.13.1':
+    resolution: {integrity: sha512-32aWDOjpnyyoViptfQyaI6gROg5IQbqjOaKhGF0SOogHvxHrNi6nBZpbnDyp0+mtXZa1d3Dwvb+NtRjl75itVw==}
+    cpu: [x64]
+    os: [darwin]
+    hasBin: true
+
+  '@pnpm/win-arm64@10.13.1':
+    resolution: {integrity: sha512-tI0f/+1us3TAIRsalPgBUy/AgZAwlnF/MhLNWb36/2UhBQVMZFbWzHNctk24qu1NGBNVisj2j1WGjbC7Qz0BUg==}
+    cpu: [arm64]
+    os: [win32]
+    hasBin: true
+
+  '@pnpm/win-x64@10.13.1':
+    resolution: {integrity: sha512-Zfr/8WcvmEpzHMWkucZzwvBB8qHYtoVqIt440NqzUDPPGzzDAG/KQmQehKK87vLZATmEdOZ6sv9yQCKDAoN80A==}
+    cpu: [x64]
+    os: [win32]
+    hasBin: true
+
+  pnpm@10.13.1:
+    resolution: {integrity: sha512-N+vxpcejDV+r4MXfRO6NpMllygxa89urKMOhaBtwolYhjQXIHJwNz3Z+9rhVHrW5YAQrntQwDFkkIzY3fgHPrQ==}
+    engines: {node: '>=18.12'}
+    hasBin: true
+
+snapshots:
+
+  '@pnpm/exe@10.13.1':
+    optionalDependencies:
+      '@pnpm/linux-arm64': 10.13.1
+      '@pnpm/linux-x64': 10.13.1
+      '@pnpm/macos-arm64': 10.13.1
+      '@pnpm/macos-x64': 10.13.1
+      '@pnpm/win-arm64': 10.13.1
+      '@pnpm/win-x64': 10.13.1
+
+  '@pnpm/linux-arm64@10.13.1':
+    optional: true
+
+  '@pnpm/linux-x64@10.13.1':
+    optional: true
+
+  '@pnpm/macos-arm64@10.13.1':
+    optional: true
+
+  '@pnpm/macos-x64@10.13.1':
+    optional: true
+
+  '@pnpm/win-arm64@10.13.1':
+    optional: true
+
+  '@pnpm/win-x64@10.13.1':
+    optional: true
+
+  pnpm@10.13.1: {}
+
+---
 lockfileVersion: '9.0'
 
 settings:
@@ -25,12 +119,6 @@ importers:
       node-gyp:
         specifier: ^11.2.0
         version: 11.2.0
-      resolve-from:
-        specifier: ^5.0.0
-        version: 5.0.0
-      slide:
-        specifier: ^1.1.6
-        version: 1.1.6
       uid-number:
         specifier: 0.0.6
         version: 0.0.6
@@ -2295,9 +2383,6 @@ packages:
   sinon@16.1.0:
     resolution: {integrity: sha512-ZSgzF0vwmoa8pq0GEynqfdnpEDyP1PkYmEChnkjW0Vyh8IDlyFEJ+fkMhCP0il6d5cJjPl2PUsnUSAuP5sttOQ==}
     deprecated: 16.1.1
-
-  slide@1.1.6:
-    resolution: {integrity: sha512-NwrtjCg+lZoqhFU8fOwl4ay2ei8PaqCBOUV3/ektPY9trO1yQ1oXEfmHAhKArUVUr/hOHvy5f6AdP17dCM0zMw==}
 
   smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
@@ -5373,8 +5458,6 @@ snapshots:
       diff: 5.2.0
       nise: 5.1.9
       supports-color: 7.2.0
-
-  slide@1.1.6: {}
 
   smart-buffer@4.2.0: {}
 
