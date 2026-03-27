@@ -7,11 +7,9 @@ const spawn = require('./lib/spawn')
 const { execute } = require('@yarnpkg/shell')
 const { npath } = require('@yarnpkg/fslib')
 const path = require('path')
-const Stream = require('stream').Stream
 const fs = require('fs')
 const chain = require('slide').chain
 const uidNumber = require('uid-number')
-const umask = require('umask')
 const byline = require('@pnpm/byline')
 const { PnpmError } = require('@pnpm/error')
 const resolveFrom = require('resolve-from')
@@ -410,51 +408,6 @@ function makeEnv (data, opts, prefix, env) {
       }
     }
   }
-
-  if (prefix !== 'npm_package_') return env
-
-  prefix = 'npm_config_'
-  const pkgConfig = {}
-  const pkgVerConfig = {}
-  const namePref = `${data.name}:`
-  const verPref = `${data.name}@${data.version}:`
-
-  Object.keys(opts.config).forEach(i => {
-    // in some rare cases (e.g. working with nerf darts), there are segmented
-    // "private" (underscore-prefixed) config names -- don't export
-    if ((i.charAt(0) === '_' && i.indexOf(`_${namePref}`) !== 0) || i.match(/:_/)) {
-      return
-    }
-    let value = opts.config[i]
-    if (value instanceof Stream || Array.isArray(value)) return
-    if (i.match(/umask/)) value = umask.toString(value)
-    if (!value) value = ''
-    else if (typeof value === 'number') value = `${value}`
-    else if (typeof value !== 'string') value = JSON.stringify(value)
-
-    value = value.includes('\n')
-      ? JSON.stringify(value)
-      : value
-    i = i.replace(/^_+/, '')
-    let k
-    if (i.indexOf(namePref) === 0) {
-      k = i.substring(namePref.length).replace(/[^a-zA-Z0-9_]/g, '_')
-      pkgConfig[k] = value
-    } else if (i.indexOf(verPref) === 0) {
-      k = i.substring(verPref.length).replace(/[^a-zA-Z0-9_]/g, '_')
-      pkgVerConfig[k] = value
-    }
-    const envKey = (prefix + i).replace(/[^a-zA-Z0-9_]/g, '_')
-    env[envKey] = value
-  })
-
-  prefix = 'npm_package_config_'
-  ;[pkgConfig, pkgVerConfig].forEach(conf => {
-    for (const i in conf) {
-      const envKey = (prefix + i)
-      env[envKey] = conf[i]
-    }
-  })
 
   return env
 }
