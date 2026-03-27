@@ -61,5 +61,5 @@
       "./node-gyp-bin/node-gyp.cmd"
     ]
   },
-  "packageManager": "pnpm@10.13.1"
+  "packageManager": "pnpm@11.0.0-beta.3"
 }
