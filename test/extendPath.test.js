@@ -1,5 +1,5 @@
-const extendPath = require('../lib/extendPath')
-const test = require('tap').test
+import { extendPath } from '../lib/extendPath.js'
+import { test } from 'tap'
 
 test('the path to noge-gyp should be added after the path to node_modules/.bin', (t) => {
   const path = extendPath(process.cwd(), '', 'node_gyp', { extraBinPaths: [] })
