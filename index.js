@@ -178,8 +178,7 @@ function runPackageLifecycle (pkg, stage, env, wd, opts, cb) {
   // run package lifecycle scripts in the package root, or the nearest parent.
   const cmd = env.npm_lifecycle_script
 
-  const note = `\n> ${pkg._id} ${stage} ${wd}\n> ${cmd}\n`
-  runCmd(note, cmd, pkg, env, stage, wd, opts, cb)
+  runCmd(cmd, pkg, env, stage, wd, opts, cb)
 }
 
 let running = false
@@ -192,10 +191,10 @@ function dequeue () {
   }
 }
 
-function runCmd (note, cmd, pkg, env, stage, wd, opts, cb) {
+function runCmd (cmd, pkg, env, stage, wd, opts, cb) {
   if (opts.runConcurrently !== true) {
     if (running) {
-      queue.push([note, cmd, pkg, env, stage, wd, opts, cb])
+      queue.push([cmd, pkg, env, stage, wd, opts, cb])
       return
     }
 
@@ -206,11 +205,6 @@ function runCmd (note, cmd, pkg, env, stage, wd, opts, cb) {
   const user = unsafe ? null : opts.user
   const group = unsafe ? null : opts.group
 
-  if (opts.log.level !== 'silent') {
-    opts.log.clearProgress()
-    console.log(note)
-    opts.log.showProgress()
-  }
   opts.log.verbose('lifecycle', logid(pkg, stage), 'unsafe-perm in lifecycle', unsafe)
 
   if (process.platform === 'win32') {
@@ -353,8 +347,7 @@ function runHookLifecycle (pkg, stage, env, wd, opts, cb) {
   hookStat(opts.dir, stage, er => {
     if (er) return cb()
     const cmd = path.join(opts.dir, '.hooks', stage)
-    const note = `\n> ${pkg._id} ${stage} ${wd}\n> ${cmd}`
-    runCmd(note, cmd, pkg, env, stage, wd, opts, cb)
+    runCmd(cmd, pkg, env, stage, wd, opts, cb)
   })
 }
 
