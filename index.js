@@ -356,7 +356,16 @@ export function makeEnv (data, opts, prefix, env) {
   if (!env) {
     env = {}
     for (const i in process.env) {
-      if (!i.match(/^npm_package_/) && (!i.match(/^PATH$/i) || i === PATH)) {
+      // npm_package_* are regenerated below. npm_config_* auth settings
+      // (e.g. _auth, _authToken, _password, //registry/:_authToken) are
+      // stripped so they never leak into dependency lifecycle scripts. This
+      // mirrors npm's own env-export filter, where config keys starting with
+      // _, /, or @ (or containing :_) are treated as private.
+      if (
+        !i.match(/^npm_package_/) &&
+        !i.match(/^npm_config_([/@_]|.*:_)/) &&
+        (!i.match(/^PATH$/i) || i === PATH)
+      ) {
         env[i] = process.env[i]
       }
     }
