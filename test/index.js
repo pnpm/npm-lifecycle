@@ -110,17 +110,46 @@ test('makeEnv', () => {
     'myPackage@1.0.0:foo': 5
   }
 
-  const env = makeEnv(pkg, {
-    config,
-    nodeOptions: '--inspect-brk --abort-on-uncaught-exception'
-  }, null, process.env)
-
-  assert.equal(env.npm_package_name, 'myPackage', 'package data is included')
-  assert.equal(env.npm_config_enteente, undefined, 'config is not included as npm_config_')
-  assert.equal(env.pnpm_config_enteente, undefined, 'config is not included as pnpm_config_')
-  assert.equal(env.npm_package_config_myPrivateVar, undefined, 'package-specific config overrides are not set')
-  assert.equal(env.npm_package_config_bar, undefined, 'package-specific config overrides are not set')
-  assert.equal(env.NODE_OPTIONS, '--inspect-brk --abort-on-uncaught-exception', 'nodeOptions sets NODE_OPTIONS')
+  process.env.npm_config_platform_arch = 'x64'
+  process.env.npm_config__auth = 'c2hvdWxkLW5vdC1sZWFr'
+  process.env.npm_config__authToken = 'should-not-leak'
+  process.env.npm_config__password = 'should-not-leak'
+  process.env['npm_config_//registry.npmjs.org/:_authToken'] = 'should-not-leak'
+  process.env['npm_config_//registry.npmjs.org/:@scope:_authToken'] = 'should-not-leak'
+  process.env['npm_config_@scope:registry'] = 'https://example.com'
+  process.env.pnpm_config__authToken = 'should-not-leak'
+  process.env['pnpm_config_//registry.npmjs.org/:_authToken'] = 'should-not-leak'
+  try {
+    const env = makeEnv(pkg, {
+      config,
+      nodeOptions: '--inspect-brk --abort-on-uncaught-exception'
+    })
+    assert.equal(env.npm_config_platform_arch, 'x64', 'user-defined npm_config_* vars from process.env are preserved')
+    assert.equal(env.npm_config__auth, undefined, 'npm_config__auth is stripped')
+    assert.equal(env.npm_config__authToken, undefined, 'npm_config__authToken is stripped')
+    assert.equal(env.npm_config__password, undefined, 'npm_config__password is stripped')
+    assert.equal(env['npm_config_//registry.npmjs.org/:_authToken'], undefined, 'registry-scoped auth tokens are stripped')
+    assert.equal(env['npm_config_//registry.npmjs.org/:@scope:_authToken'], undefined, 'scoped registry auth tokens are stripped')
+    assert.equal(env['npm_config_@scope:registry'], undefined, 'scope-prefixed config is stripped')
+    assert.equal(env.pnpm_config__authToken, undefined, 'pnpm_config__authToken is stripped')
+    assert.equal(env['pnpm_config_//registry.npmjs.org/:_authToken'], undefined, 'pnpm registry-scoped auth tokens are stripped')
+    assert.equal(env.npm_package_name, 'myPackage', 'package data is included')
+    assert.equal(env.npm_config_enteente, undefined, 'config is not included as npm_config_')
+    assert.equal(env.pnpm_config_enteente, undefined, 'config is not included as pnpm_config_')
+    assert.equal(env.npm_package_config_myPrivateVar, undefined, 'package-specific config overrides are not set')
+    assert.equal(env.npm_package_config_bar, undefined, 'package-specific config overrides are not set')
+    assert.equal(env.NODE_OPTIONS, '--inspect-brk --abort-on-uncaught-exception', 'nodeOptions sets NODE_OPTIONS')
+  } finally {
+    delete process.env.npm_config_platform_arch
+    delete process.env.npm_config__auth
+    delete process.env.npm_config__authToken
+    delete process.env.npm_config__password
+    delete process.env['npm_config_//registry.npmjs.org/:_authToken']
+    delete process.env['npm_config_//registry.npmjs.org/:@scope:_authToken']
+    delete process.env['npm_config_@scope:registry']
+    delete process.env.pnpm_config__authToken
+    delete process.env['pnpm_config_//registry.npmjs.org/:_authToken']
+  }
 })
 
 test('throw error signal kills child', async (t) => {
