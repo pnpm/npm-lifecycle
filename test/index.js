@@ -110,17 +110,22 @@ test('makeEnv', () => {
     'myPackage@1.0.0:foo': 5
   }
 
-  const env = makeEnv(pkg, {
-    config,
-    nodeOptions: '--inspect-brk --abort-on-uncaught-exception'
-  }, null, process.env)
-
-  assert.equal(env.npm_package_name, 'myPackage', 'package data is included')
-  assert.equal(env.npm_config_enteente, undefined, 'config is not included as npm_config_')
-  assert.equal(env.pnpm_config_enteente, undefined, 'config is not included as pnpm_config_')
-  assert.equal(env.npm_package_config_myPrivateVar, undefined, 'package-specific config overrides are not set')
-  assert.equal(env.npm_package_config_bar, undefined, 'package-specific config overrides are not set')
-  assert.equal(env.NODE_OPTIONS, '--inspect-brk --abort-on-uncaught-exception', 'nodeOptions sets NODE_OPTIONS')
+  process.env.npm_config_platform_arch = 'x64'
+  try {
+    const env = makeEnv(pkg, {
+      config,
+      nodeOptions: '--inspect-brk --abort-on-uncaught-exception'
+    })
+    assert.equal(env.npm_config_platform_arch, 'x64', 'user-defined npm_config_* vars from process.env are preserved')
+    assert.equal(env.npm_package_name, 'myPackage', 'package data is included')
+    assert.equal(env.npm_config_enteente, undefined, 'config is not included as npm_config_')
+    assert.equal(env.pnpm_config_enteente, undefined, 'config is not included as pnpm_config_')
+    assert.equal(env.npm_package_config_myPrivateVar, undefined, 'package-specific config overrides are not set')
+    assert.equal(env.npm_package_config_bar, undefined, 'package-specific config overrides are not set')
+    assert.equal(env.NODE_OPTIONS, '--inspect-brk --abort-on-uncaught-exception', 'nodeOptions sets NODE_OPTIONS')
+  } finally {
+    delete process.env.npm_config_platform_arch
+  }
 })
 
 test('throw error signal kills child', async (t) => {

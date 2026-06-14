@@ -356,7 +356,7 @@ export function makeEnv (data, opts, prefix, env) {
   if (!env) {
     env = {}
     for (const i in process.env) {
-      if (!i.match(/^npm_/) && (!i.match(/^PATH$/i) || i === PATH)) {
+      if (!i.match(/^npm_package_/) && (!i.match(/^PATH$/i) || i === PATH)) {
         env[i] = process.env[i]
       }
     }
