@@ -1,0 +1,7 @@
+{
+  "name": "compound-sigint",
+  "version": "1.0.0",
+  "scripts": {
+    "chained": "sleep 5 && echo done"
+  }
+}
