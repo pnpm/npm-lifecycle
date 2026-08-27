@@ -255,6 +255,8 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   opts.log.verbose('lifecycle', logid(pkg, stage), 'CWD:', wd)
   opts.log.silly('lifecycle', logid(pkg, stage), 'Args:', [shFlag, cmd])
 
+  let completed = false
+
   if (opts.shellEmulator) {
     const execOpts = { cwd: npath.toPortablePath(wd), env }
     if (opts.stdio === 'pipe') {
@@ -287,6 +289,7 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
 
   proc.on('error', procError)
   proc.on('close', (code, signal) => {
+    if (completed) return
     opts.log.silly('lifecycle', logid(pkg, stage), 'Returned: code:', code, ' signal:', signal)
     let err
     if (signal) {
@@ -308,7 +311,17 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   process.once('SIGINT', procInterrupt)
   process.on('exit', procKill)
 
+  try {
+    opts.onSpawn?.(proc)
+  } catch (err) {
+    procError(err)
+    proc.kill()
+    return
+  }
+
   function procError (er) {
+    if (completed) return
+    completed = true
     if (er) {
       opts.log.info('lifecycle', logid(pkg, stage), `Failed to exec ${stage} script`)
       er.message = `${pkg._id} ${stage}: \`${cmd}\`\n${er.message}`
