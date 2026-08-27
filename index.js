@@ -286,13 +286,19 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   }
 
   const proc = spawn(sh, [shFlag, cmd], conf, opts.log)
+  let spawnObserverFailed = false
+  let spawnObserverError
 
-  proc.on('error', procError)
+  proc.on('error', (err) => {
+    procError(spawnObserverFailed ? spawnObserverError : err)
+  })
   proc.on('close', (code, signal) => {
     if (completed) return
     opts.log.silly('lifecycle', logid(pkg, stage), 'Returned: code:', code, ' signal:', signal)
     let err
-    if (signal) {
+    if (spawnObserverFailed) {
+      err = spawnObserverError
+    } else if (signal) {
       err = new PnpmError('CHILD_PROCESS_FAILED', `Command failed with signal "${signal}"`)
       process.kill(process.pid, signal)
     } else if (code) {
@@ -314,9 +320,9 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   try {
     opts.onSpawn?.(proc)
   } catch (err) {
-    procError(err)
+    spawnObserverFailed = true
+    spawnObserverError = err
     proc.kill()
-    return
   }
 
   function procError (er) {

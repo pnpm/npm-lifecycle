@@ -117,6 +117,7 @@ test('rejects when the spawn observer fails', async () => {
   const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
   const log = makeLog()
   const pkg = require(path.resolve(fixture, 'package.json'))
+  let childClosed = false
 
   await assert.rejects(
     lifecycle(pkg, 'postinstall', fixture, {
@@ -124,10 +125,14 @@ test('rejects when the spawn observer fails', async () => {
       log,
       dir: fixture,
       config: {},
-      onSpawn: () => { throw new Error('observer failed') }
+      onSpawn: child => {
+        child.once('close', () => { childClosed = true })
+        throw new Error('observer failed')
+      }
     }),
     /observer failed/
   )
+  assert.equal(childClosed, true)
 })
 
 test('runs lifecycle scripts with the shell emulator', async () => {
