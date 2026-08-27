@@ -44,6 +44,7 @@ jump in if you'd like to, or even ask us questions if something isn't clear.
 passed to the child process. `[0, 1, 2]` by default.
 * `opts.runConcurrently` - *Boolean* - `false` by default. If `true`, lifecycle scripts may run concurrently.
 * `opts.extraEnv` - *Record<string, string>* - add some extra env vars to the exec environment of the lifecycle script.
+* `opts.onSpawn` - *Function* - called with each spawned lifecycle child process.
 
 ##### Example
 

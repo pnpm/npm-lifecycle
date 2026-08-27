@@ -94,6 +94,65 @@ test("reports child's output", async () => {
   )
 })
 
+test('reports the spawned lifecycle process', async () => {
+  const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
+  const log = makeLog()
+  const pkg = require(path.resolve(fixture, 'package.json'))
+  let spawned
+
+  await lifecycle(pkg, 'postinstall', fixture, {
+    stdio: 'pipe',
+    log,
+    dir: fixture,
+    config: {},
+    onSpawn: child => { spawned = child }
+  })
+
+  assert.equal(typeof spawned.pid, 'number')
+  assert.equal(typeof spawned.once, 'function')
+  assert.equal(typeof spawned.kill, 'function')
+})
+
+test('rejects when the spawn observer fails', async () => {
+  const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
+  const log = makeLog()
+  const pkg = require(path.resolve(fixture, 'package.json'))
+  let childClosed = false
+
+  await assert.rejects(
+    lifecycle(pkg, 'postinstall', fixture, {
+      stdio: 'pipe',
+      log,
+      dir: fixture,
+      config: {},
+      onSpawn: child => {
+        child.once('close', () => { childClosed = true })
+        throw new Error('observer failed')
+      }
+    }),
+    /observer failed/
+  )
+  assert.equal(childClosed, true)
+})
+
+test('runs lifecycle scripts with the shell emulator', async () => {
+  const fixture = path.join(__dirname, 'fixtures', 'count-to-10')
+  const log = makeLog()
+  const pkg = require(path.resolve(fixture, 'package.json'))
+  let spawned = false
+
+  await lifecycle(pkg, 'postinstall', fixture, {
+    stdio: 'pipe',
+    log,
+    dir: fixture,
+    config: {},
+    shellEmulator: true,
+    onSpawn: () => { spawned = true }
+  })
+
+  assert.equal(spawned, false)
+})
+
 test('makeEnv', () => {
   const pkg = {
     name: 'myPackage',

@@ -255,6 +255,8 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   opts.log.verbose('lifecycle', logid(pkg, stage), 'CWD:', wd)
   opts.log.silly('lifecycle', logid(pkg, stage), 'Args:', [shFlag, cmd])
 
+  let completed = false
+
   if (opts.shellEmulator) {
     const execOpts = { cwd: npath.toPortablePath(wd), env }
     if (opts.stdio === 'pipe') {
@@ -284,12 +286,19 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   }
 
   const proc = spawn(sh, [shFlag, cmd], conf, opts.log)
+  let spawnObserverFailed = false
+  let spawnObserverError
 
-  proc.on('error', procError)
+  proc.on('error', (err) => {
+    procError(spawnObserverFailed ? spawnObserverError : err)
+  })
   proc.on('close', (code, signal) => {
+    if (completed) return
     opts.log.silly('lifecycle', logid(pkg, stage), 'Returned: code:', code, ' signal:', signal)
     let err
-    if (signal) {
+    if (spawnObserverFailed) {
+      err = spawnObserverError
+    } else if (signal) {
       err = new PnpmError('CHILD_PROCESS_FAILED', `Command failed with signal "${signal}"`)
       process.kill(process.pid, signal)
     } else if (code) {
@@ -308,7 +317,17 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   process.once('SIGINT', procInterrupt)
   process.on('exit', procKill)
 
+  try {
+    opts.onSpawn?.(proc)
+  } catch (err) {
+    spawnObserverFailed = true
+    spawnObserverError = err
+    proc.kill()
+  }
+
   function procError (er) {
+    if (completed) return
+    completed = true
     if (er) {
       opts.log.info('lifecycle', logid(pkg, stage), `Failed to exec ${stage} script`)
       er.message = `${pkg._id} ${stage}: \`${cmd}\`\n${er.message}`
