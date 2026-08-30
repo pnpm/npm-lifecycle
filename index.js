@@ -230,7 +230,11 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
   const conf = {
     cwd: wd,
     env,
-    stdio: opts.stdio || [0, 1, 2]
+    stdio: opts.stdio || [0, 1, 2],
+    // Keeps a terminal's Ctrl-C from also reaching the child directly, so
+    // procInterrupt()'s forward below is the only delivery path instead of a
+    // redundant second one that can kill the child mid-cleanup.
+    detached: process.platform !== 'win32'
   }
 
   if (!unsafe) {
@@ -350,14 +354,27 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
     process.removeListener('exit', procKill)
     return cb(er)
   }
+  // The script's own process group (it's the leader, since conf.detached made
+  // it one) so a shell operator like && or | that forks further processes
+  // gets signalled too, not just the immediate `sh`.
+  function killScript (sig) {
+    if (conf.detached && proc.pid) {
+      try {
+        return process.kill(-proc.pid, sig)
+      } catch (er) {
+        // the group is already gone; fall through to the plain pid form
+      }
+    }
+    proc.kill(sig)
+  }
   let called = false
   function procKill () {
     if (called) return
     called = true
-    proc.kill()
+    killScript()
   }
   function procInterrupt () {
-    proc.kill('SIGINT')
+    killScript('SIGINT')
     process.once('SIGINT', procKill)
   }
 }

@@ -1,0 +1,7 @@
+{
+  "name": "graceful-sigint",
+  "version": "1.0.0",
+  "scripts": {
+    "graceful": "node child.js"
+  }
+}
