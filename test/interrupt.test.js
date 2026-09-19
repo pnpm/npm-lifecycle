@@ -20,7 +20,7 @@ test('a SIGINT sent to a process without a terminal is relayed to the child', { 
   const proc = spawn(process.execPath, [runScript], { detached: true, stdio: ['ignore', 'pipe', 'inherit'] })
   let stdout = ''
   proc.stdout.setEncoding('utf8')
-  const exited = new Promise((resolve) => { proc.on('exit', resolve) })
+  const exited = new Promise((resolve) => { proc.on('close', resolve) })
   const killTimer = setTimeout(() => { proc.kill('SIGKILL') }, shutdownTimeout)
   const started = new Promise((resolve) => {
     proc.stdout.on('data', (data) => {
