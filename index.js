@@ -357,9 +357,33 @@ function runCmd_ (cmd, pkg, env, wd, opts, stage, unsafe, uid, gid, cb_) {
     proc.kill()
   }
   function procInterrupt () {
-    proc.kill('SIGINT')
+    if (!hasControllingTerminal()) {
+      proc.kill('SIGINT')
+    }
     process.once('SIGINT', procKill)
   }
+}
+
+/**
+ * Whether this process has a controlling terminal.
+ *
+ * Ctrl+C there interrupts the whole foreground process group at once, and the
+ * child runs in that group, so it has the SIGINT already. Relaying it would
+ * deliver a second one, which ends a child that handled the first and then
+ * left the default action in place (https://github.com/pnpm/pnpm/issues/7374).
+ * Node.js cannot ask who sent a signal, so the terminal stands in for it:
+ * without one, only kill() can reach the process, and the child needs the relay.
+ */
+function hasControllingTerminal () {
+  if (process.platform === 'win32') return false
+  let tty
+  try {
+    tty = fs.openSync('/dev/tty', fs.constants.O_RDONLY | fs.constants.O_NOCTTY)
+  } catch {
+    return false
+  }
+  fs.closeSync(tty)
+  return true
 }
 
 function runHookLifecycle (pkg, stage, env, wd, opts, cb) {
