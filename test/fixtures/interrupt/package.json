@@ -2,6 +2,6 @@
   "name": "interrupt",
   "version": "1.0.0",
   "scripts": {
-    "dev": "node dev.js"
+    "dev": "exec node dev.js"
   }
 }
